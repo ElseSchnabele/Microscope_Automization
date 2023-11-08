@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 import subprocess
 from automization import CameraFilterSynronizer
 import os
-
+#janitos comment
 #display error messages
 def display_error_message(label, message):
     label.config(text=message)
