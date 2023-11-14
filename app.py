@@ -3,7 +3,7 @@ import typing
 from tkinter import ttk
 from PIL import Image, ImageTk 
 import subprocess
-from automization import CameraFilterSynronizer
+#from automization import CameraFilterSynronizer
 import os
 #janitos comment
 #display error messages
