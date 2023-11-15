@@ -3,9 +3,9 @@ import typing
 from tkinter import ttk
 from PIL import Image, ImageTk 
 import subprocess
+from Show_TifffileStack import TifStackViewer
 #from automization import CameraFilterSynronizer
 import os
-#janitos comment
 #display error messages
 def display_error_message(label, message):
     label.config(text=message)
@@ -50,7 +50,15 @@ def min_smaller_max(min_and_max: typing.Tuple, error_message_label, error_messag
     else:
         display_error_message(error_message_label, error_message)
         return False
-    
+
+def open_window_tif_view():
+    window_tifView = tk.Toplevel(root)
+    window_tifView.title("Display_tiffiles")
+
+    test = TifStackViewer(window_tifView)
+
+    window_tifView.mainloop()
+
 #run automatization.py button
 def run_script():
     min_wavelength = min_wavelength_spinbox.get()
@@ -104,7 +112,7 @@ label4 = tk.Label(root, text="Exposure Time [µs]:")
 exposure_time_entry = tk.Entry(root)
 exposure_time_entry.insert(0, 500000)
 
-
+tif_view_Button = tk.Button(root, text = "show Images", command=open_window_tif_view)
 run_button = tk.Button(root, text="Collect Images", command=run_script)
 
 
@@ -126,7 +134,8 @@ error_message_bitdepth.grid(row=2, column=2)
 
 exposure_time_entry.grid(row=3, column=1)
 run_button.grid(row=4, column=0, columnspan=2)
-output_text.grid(row=5, column=0, columnspan=2)
+tif_view_Button.grid(row=5, column=0, columnspan=2)
+output_text.grid(row=6, column=0, columnspan=2)
 error_message_exposure_time.grid(row=3, column=2)
 
 
