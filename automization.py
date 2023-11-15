@@ -4,6 +4,7 @@ import numpy as np
 import os
 import tifffile
 import typing
+import scipy
 
 try:
     from KURIOS_COMMAND_LIB import *
@@ -112,15 +113,15 @@ class CameraFilterSynronizer:
                         # transform the raw image data into RGB color data
                         image_data= self._mono_to_color_processor.transform_to_48(image_data, self._image_width, self._image_height).reshape(self._image_height, self._image_width, 3)
                     
-                    scaled_image_data = ((image_data - image_data.min()) / (image_data.max() - image_data.min()) * 65535).astype(np.uint16)
+                    scaled_image_data = ((image_data - image_data.min()) / (image_data.max() - image_data.min()) * 256).astype(np.uint8)
+                    
+                    
                     with tifffile.TiffWriter(output_dir + os.sep + filename, append=True) as tiff:
-                        """
-                            Setting append=True here means that calling tiff.save will add the image as a page to a multipage TIFF. 
-                        """
                         tiff.save(data=scaled_image_data,  # np.ushort image data array from the camera
-                                #compression = 'tiff_lzw'# amount of compression (0-9), by default it is uncompressed (0)
+                                #compression = 'deflate'# amount of compression (0-9), by default it is uncompressed (0)
                                 )
-                
+                    
+  
                     
     def cleanup(self):
         if self._is_color_camera:

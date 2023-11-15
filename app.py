@@ -65,7 +65,7 @@ def run_script():
     max_wavelength = max_wavelength_spinbox.get()
     bitdepth = bitdepth_entry.get()
     exposure_time = exposure_time_entry.get()
-    
+    filename = filename_entry.get()
     is_min_valid = validate_entry(min_wavelength_spinbox, error_message_min_wavelength, validate_integer, "Please enter a valid integer for Min. Wavelength!")
     is_max_valid = validate_entry(max_wavelength_spinbox, error_message_max_wavelength, validate_integer, "Please enter a valid integer for Max. Wavelength")
     is_bitdepth_valid = validate_entry(bitdepth_entry, error_message_bitdepth, validate_float, "Please enter a valid float for Bit Depth")
@@ -86,7 +86,7 @@ def run_script():
                                         )
             syncroniser.gatherImages(
                 output_dir = os.path.abspath(r'.'),
-                filename = 'test_gui.tif',
+                filename = f"{filename}.tif",
                 )
             syncroniser.cleanup()
 
@@ -120,6 +120,12 @@ label4 = tk.Label(root, text="Exposure Time [µs]:")
 exposure_time_entry = tk.Entry(root)
 exposure_time_entry.insert(0, 5000000)
 
+label5 = tk.Label(root, text="Filename:")
+filename_entry = tk.Entry(root)
+
+label6 = tk.Label(root, text = "Warning! If file already exists it will be overwritten!")
+label6.config(fg= 'red')
+
 tif_view_Button = tk.Button(root, text = "show Images", command=open_window_tif_view)
 run_button = tk.Button(root, text="Collect Images", command=run_script)
 
@@ -137,14 +143,22 @@ error_message_max_wavelength.grid(row=1, column=2)
 
 label3.grid(row=2, column=0)
 bitdepth_entry.grid(row=2, column=1)
-label4.grid(row=3, column=0)
 error_message_bitdepth.grid(row=2, column=2)
 
+label4.grid(row=3, column=0)
 exposure_time_entry.grid(row=3, column=1)
-run_button.grid(row=4, column=0, columnspan=2)
-tif_view_Button.grid(row=5, column=0, columnspan=2)
-output_text.grid(row=6, column=0, columnspan=2)
 error_message_exposure_time.grid(row=3, column=2)
+
+label5.grid(row = 5, column= 0)
+filename_entry.grid(row = 5, column= 1)
+
+label6.grid(row = 6, column= 0, columnspan= 2)
+
+run_button.grid(row=7, column=0, columnspan=2)
+
+tif_view_Button.grid(row=8, column=0, columnspan=2)
+
+output_text.grid(row=9, column=0, columnspan=2)
 
 
 root.mainloop()
