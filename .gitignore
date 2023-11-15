@@ -1,3 +1,4 @@
-_pycache/
+#ignore pycache
+__pycache__/
 
 .tif
