@@ -1,4 +1,4 @@
 #ignore pycache
 __pycache__/
-
+.pyc
 .tif

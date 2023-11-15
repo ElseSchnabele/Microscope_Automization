@@ -4,7 +4,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk 
 import subprocess
 from Show_TifffileStack import TifStackViewer
-#from automization import CameraFilterSynronizer
+from automization import CameraFilterSynronizer
 import os
 #display error messages
 def display_error_message(label, message):
@@ -80,7 +80,15 @@ def run_script():
             output_text.insert(tk.END, output)
             output_text.config(state=tk.DISABLED)
             #TODO: initialize CameraFilterSynronizer here and display tif file (in another window)
-        
+            syncroniser = CameraFilterSynronizer(wavelengths=[ int(min_wavelength) + i for i in range(int(max_wavelength)-int(min_wavelength)+1)],
+                                        tag_bitdepth = int(bitdepth),
+                                        tag_exposure= int(exposure_time)
+                                        )
+            syncroniser.gatherImages(
+                output_dir = os.path.abspath(r'.'),
+                filename = 'test_gui.tif',
+                )
+            syncroniser.cleanup()
 
 #main window
 root = tk.Tk()
@@ -110,7 +118,7 @@ bitdepth_entry.insert(0, 32768)
 
 label4 = tk.Label(root, text="Exposure Time [µs]:")
 exposure_time_entry = tk.Entry(root)
-exposure_time_entry.insert(0, 500000)
+exposure_time_entry.insert(0, 5000000)
 
 tif_view_Button = tk.Button(root, text = "show Images", command=open_window_tif_view)
 run_button = tk.Button(root, text="Collect Images", command=run_script)

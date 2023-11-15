@@ -118,7 +118,7 @@ class CameraFilterSynronizer:
                             Setting append=True here means that calling tiff.save will add the image as a page to a multipage TIFF. 
                         """
                         tiff.save(data=scaled_image_data,  # np.ushort image data array from the camera
-                                compression = None# amount of compression (0-9), by default it is uncompressed (0)
+                                #compression = 'tiff_lzw'# amount of compression (0-9), by default it is uncompressed (0)
                                 )
                 
                     
@@ -147,8 +147,8 @@ class CameraFilterSynronizer:
 
 
 
+if __name__ == "__main__":
 
-def main():
     syncroniser = CameraFilterSynronizer(wavelengths=[ x + 550 for x in range(10)],
                                         tag_bitdepth = 32768,
                                         tag_exposure= int(5e6)
@@ -158,8 +158,5 @@ def main():
         filename = 'test_series1.tif',
         )
     syncroniser.cleanup()
-    
-
-main()
 
 
