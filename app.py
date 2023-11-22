@@ -4,7 +4,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk 
 import subprocess
 from Show_TifffileStack import TifStackViewer
-from automization import CameraFilterSynronizer
+from Show_Tiff_matplotlib import TifStackViewer_matplot
+#from automization import CameraFilterSynronizer
 import os
 #display error messages
 def display_error_message(label, message):
@@ -55,7 +56,7 @@ def open_window_tif_view():
     window_tifView = tk.Toplevel(root)
     window_tifView.title("Display_tiffiles")
 
-    test = TifStackViewer(window_tifView)
+    test = TifStackViewer_matplot(window_tifView)
 
     window_tifView.mainloop()
 
