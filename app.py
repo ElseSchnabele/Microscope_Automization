@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 import subprocess
 from Show_TifffileStack import TifStackViewer
 from Show_Tiff_matplotlib import TifStackViewer_matplot
-from automization import CameraFilterSynronizer
+#from automization import CameraFilterSynronizer
 import os
 
 class CFsyncApp:
@@ -177,11 +177,11 @@ class CFsyncApp:
             self.display_error_message(error_message_label, error_message)
             return False
 
-    def open_window_tif_view():
-        window_tifView = tk.Toplevel(root)
+    def open_window_tif_view(self):
+        window_tifView = tk.Toplevel(self.root)
         window_tifView.title("Display_tiffiles")
 
-        test = TifStackViewer(window_tifView)
+        TifStackViewer_matplot(window_tifView)
 
         window_tifView.mainloop()
 
