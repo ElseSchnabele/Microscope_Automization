@@ -4,6 +4,9 @@ from tkinter import filedialog
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from PIL import Image
+from ShowSpectra import ShowSpectra
+import re
+import os
 
 class TifStackViewer_matplot:
     def __init__(self, root):
@@ -12,12 +15,17 @@ class TifStackViewer_matplot:
         self.root.title("TIF Stack Viewer")
         self.root.state('zoomed')
 
+        #for wavelength from file-name
+        self.wavelength_intervall = [0,0]
+
         #frame for canfas and slider
         self.frame = tk.Frame(self.root)
         self.frame.pack(expand = tk.YES, fill = tk.BOTH)
 
         # counter
         self.current_index = 0
+
+        self.filepath = ""
 
         # Button
         self.load_button = tk.Button(self.frame, text="Load TIF Stack", command=self.load_tif_stack)
@@ -38,15 +46,26 @@ class TifStackViewer_matplot:
         self.toolbar.update()
         self.canvas.get_tk_widget().pack(expand = tk.YES, side = tk.BOTTOM, fill = tk.X)
 
+        #self.wavelength_min = wavelength_min
+        #self.wavelength_max = wavelength_max
+
         # Binding for click event on the canvas
         self.canvas.mpl_connect("button_press_event", self.on_canvas_click)
 
     def load_tif_stack(self):
-        file_path = filedialog.askopenfilename(filetypes=[("TIF files", "*.tif")])
-        if file_path:
-            self.image_stack = self.load_images_from_tif(file_path)
+        self.file_path = filedialog.askopenfilename(filetypes=[("TIF files", "*.tif")])
+        if self.file_path:
+            self.image_stack = self.load_images_from_tif(self.file_path)
             self.slider.config(from_ = 0, to=len(self.image_stack) - 1)
             self.show_image()
+
+            filename = os.path.basename(self.file_path)
+            pattern = re.compile(r'focal(\d+)-(\d+)\.tif')
+            solution = pattern.search(filename)
+
+            if solution:
+                self.wavelength_intervall[0] = int(solution.group(1))
+                self.wavelength_intervall[1] = int(solution.group(2))
 
     def load_images_from_tif(self, file_path):
         image_stack = []
@@ -70,8 +89,13 @@ class TifStackViewer_matplot:
     def on_canvas_click(self, event):
         # Function to be called when the left mouse button is clicked on the canvas
         if event.button == 1:  # Check if the left mouse button was clicked
-            x, y = event.xdata, event.ydata
+            x, y = int(event.xdata), int(event.ydata)
             print(f"Cursor Position on Click: x={x}, y={y}")
+
+            window_spectra = tk.Toplevel(self.root)
+            window_spectra.title("Spectra")
+
+            ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
 
         # function for the window for the spectra
 

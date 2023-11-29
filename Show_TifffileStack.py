@@ -12,6 +12,8 @@ class TifStackViewer:
         self.image_list = []
         self.current_index = 0
 
+        self.filepath = ""
+
         #button
         self.load_button = tk.Button(root, text="Load TIF Stack", command=self.load_tif_stack)
         self.load_button.pack(side=tk.BOTTOM)
@@ -24,9 +26,9 @@ class TifStackViewer:
         self.slider.pack(expand=tk.YES, fill=tk.BOTH)
 
     def load_tif_stack(self):
-        file_path = filedialog.askopenfilename(filetypes=[("TIF files", "*.tif")])
-        if file_path:
-            self.image_list = self.load_images_from_tif(file_path)
+        self.file_path = filedialog.askopenfilename(filetypes=[("TIF files", "*.tif")])
+        if self.file_path:
+            self.image_list = self.load_images_from_tif(self.file_path)
             self.slider.config(to = len(self.image_list) - 1)
             self.show_image()
 
