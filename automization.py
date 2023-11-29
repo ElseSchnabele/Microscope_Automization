@@ -5,7 +5,7 @@ import os
 import tifffile
 import typing
 import scipy
-
+from image_normalizer import ImageNormalizer
 try:
     from KURIOS_COMMAND_LIB import *
 except OSError as ex:
@@ -31,7 +31,7 @@ class CameraFilterSynronizer:
     
     def __init__(self, wavelengths: list, tag_bitdepth: int, tag_exposure: int) -> None:
         self._wavelengths = wavelengths
-
+        
         #try to access Kurios
         devs = KuriosListDevices()
         print(devs)
@@ -79,7 +79,7 @@ class CameraFilterSynronizer:
 
                 
         
-    def gatherImages(self, output_dir: str, filename: str):
+    def gatherImages(self, output_dir: str, filename: str, calib_filepath:str):
         
         # delete image if it exists
         if os.path.exists(output_dir + os.sep + filename):
@@ -112,9 +112,12 @@ class CameraFilterSynronizer:
                     if self._is_color_camera:
                         # transform the raw image data into RGB color data
                         image_data= self._mono_to_color_processor.transform_to_48(image_data, self._image_width, self._image_height).reshape(self._image_height, self._image_width, 3)
-                    
+                    data_dict = {
+                        'images': image_data,
+                        'wavelengths': self._wavelengths
+                    }
+                    img_normalizer = ImageNormalizer(data_dict= data_dict, calibration_file_path= calib_filepath)
                     scaled_image_data = ((image_data - image_data.min()) / (image_data.max() - image_data.min()) * 256).astype(np.uint8)
-                    
                     
                     with tifffile.TiffWriter(output_dir + os.sep + filename, append=True) as tiff:
                         tiff.save(data=scaled_image_data,  # np.ushort image data array from the camera
@@ -124,6 +127,10 @@ class CameraFilterSynronizer:
   
                     
     def cleanup(self):
+        """
+        The function `cleanup` disposes of resources related to a color camera and closes the camera
+        connection.
+        """
         if self._is_color_camera:
             try:
                 self._mono_to_color_processor.dispose()

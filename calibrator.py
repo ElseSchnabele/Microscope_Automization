@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 import numpy as np
+import os
 try:
     from KURIOS_COMMAND_LIB import *
 except OSError as ex:
@@ -15,7 +16,7 @@ import pyvisa
 from ThorlabsPM100 import ThorlabsPM100
 
 
-class Calibrator():
+class PowerCalibrator():
     def __init__(self) -> None:
         #try to access Kurios
         devs = KuriosListDevices()
@@ -69,9 +70,11 @@ class Calibrator():
             print(mes.mean())
         
         df = pd.DataFrame(measurements)
+        output_folder = 'PowerCalibrationFiles' 
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
 
-        # Save the DataFrame to a CSV file
-        df.to_csv('Calibration files/'+csv_name, index=False)
+        df.to_csv(os.path.join(output_folder, csv_name), index=False)
 
     def cleanup(self):
         KuriosClose(self._hdl)
@@ -82,7 +85,7 @@ class Calibrator():
         pass
     
 if __name__ == "__main__":
-    calib = Calibrator()
+    calib = PowerCalibrator()
     calib.calibrate(420, 730, 'Calib_x40.csv')
     calib.cleanup()
     
