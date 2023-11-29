@@ -4,7 +4,7 @@ from tkinter import filedialog
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from PIL import Image
-from ShowSpectra import ShowSpectra
+from show_spectra import ShowSpectra
 import re
 import os
 
