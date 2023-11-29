@@ -7,16 +7,10 @@ import typing
 import scipy
 from image_normalizer import ImageNormalizer
 try:
-    from KURIOS_COMMAND_LIB import *
+    from Sensor_lib.KURIOS_COMMAND_LIB import *
 except OSError as ex:
     print("Warning:",ex)
 
-try:
-    # if on Windows, use the provided setup script to add the DLLs folder to the PATH
-    from windows_setup import configure_path
-    configure_path()
-except ImportError:
-    configure_path = None
 
 
 from thorlabs_tsi_sdk.tl_camera import TLCameraSDK

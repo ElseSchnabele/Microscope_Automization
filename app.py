@@ -3,9 +3,8 @@ import typing
 from tkinter import ttk, filedialog
 from PIL import Image, ImageTk 
 import subprocess
-from Show_TifffileStack import TifStackViewer
-from Show_Tiff_matplotlib import TifStackViewer_matplot
-#from automization import CameraFilterSynronizer
+from show_tiff_matplotlib import TifStackViewer_matplot
+from automization import CameraFilterSynronizer
 import os
 
 class CFsyncApp:

@@ -3,12 +3,12 @@ import pandas as pd
 import numpy as np
 import os
 try:
-    from KURIOS_COMMAND_LIB import *
+    from Sensor_lib.KURIOS_COMMAND_LIB import *
 except OSError as ex:
     print("Warning:",ex)
 from datetime import datetime
 from ctypes import cdll,c_long, c_ulong, c_uint32,byref,create_string_buffer,c_bool,c_char_p,c_int,c_int16,c_double, sizeof, c_voidp
-from TLPM import TLPM
+from Sensor_lib.TLPM import TLPM
 import time
 from ThorlabsPM100 import ThorlabsPM100, USBTMC
 
