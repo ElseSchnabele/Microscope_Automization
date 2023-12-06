@@ -1,0 +1,6 @@
+{
+    "docwriter.style": "Doxygen",
+    "docwriter.progress.trackTypes": true,
+    "docwriter.progress.trackClasses": true,
+    "docwriter.progress.trackFunctions": true
+}

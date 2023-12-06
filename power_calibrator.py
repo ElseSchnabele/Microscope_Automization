@@ -18,6 +18,10 @@ from ThorlabsPM100 import ThorlabsPM100
 
 class PowerCalibrator:
     def __init__(self) -> None:
+        """
+        The above function initializes the PowerCalibrator and connects to a Kurios device and a power meter, and prints some
+        information about the devices.
+        """
         #try to access Kurios
         devs = KuriosListDevices()
         print(devs)
@@ -52,6 +56,15 @@ class PowerCalibrator:
         self._power_meter = power_meter
                 
     def calibrate(self, min_wavelength, max_wavelength, csv_name):
+        """
+        The `calibrate` function takes in a minimum and maximum wavelength, performs power measurements at
+        each wavelength, and saves the measurements to a CSV file.
+        
+        @param min_wavelength The minimum wavelength value for calibration.
+        @param max_wavelength The maximum wavelength to calibrate the power meter for.
+        @param csv_name The `csv_name` parameter is the name of the CSV file that will be created to store
+        the calibration measurements.
+        """
         
         wavelength_interval =[min_wavelength+i for i in range(max_wavelength-min_wavelength+1)]
         measurements = {
@@ -77,13 +90,13 @@ class PowerCalibrator:
         df.to_csv(os.path.join(output_folder, csv_name), index=False)
 
     def cleanup(self):
+        """
+        The function `cleanup` closes a Kurios handle and a tlPM object.
+        """
         KuriosClose(self._hdl)
         self._tlPM.close()
         
-    def load_calib(self):
-        #TODO load and process raw CSV data
-        pass
-    
+
 if __name__ == "__main__":
     calib = PowerCalibrator()
     calib.calibrate(420, 730, 'Calib_x40.csv')

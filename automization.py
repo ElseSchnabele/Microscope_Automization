@@ -28,9 +28,22 @@ except ImportError:
 
 
 
-class CameraFilterSynronizer:
+# The `CameraFilterSynronizer` class initializes the Xiralux Camera the Kurios Polarization filter, and provides
+# methods for capturing and processing images.
+class CameraFilterSyncronizer:
     
     def __init__(self, wavelengths: list, exposure: int) -> None:
+        """
+        The above function initializes a class instance of the CamerFilterSyncronizer with a list of wavelengths and an exposure time, and
+        attempts to access a Kurios device and a camera.
+        
+        @param wavelengths The `wavelengths` parameter is a list that contains the wavelengths of light that
+        you want to capture using the camera. It is used to specify the specific wavelengths at which you
+        want to capture images.
+        @param exposure The `exposure` parameter is an integer that represents the exposure time for the
+        camera in milliseconds. It determines how long the camera's sensor is exposed to light when
+        capturing an image.
+        """
         self._wavelengths = wavelengths
         
         #try to access Kurios
@@ -76,10 +89,23 @@ class CameraFilterSynronizer:
                     )
                 self._mono_to_color_sdk = mono_to_color_sdk
                 self._mono_to_color_processor = mono_to_color_processor
-
-                
+ 
         
     def gatherImages(self, output_dir: str, filename: str, calib_filepath:str, is_calib: bool):
+        """
+        The function `gatherImages` captures images from a camera and saves them as TIFF files, either
+        with or without applying image normalization.
+        
+        @param output_dir The output directory where the gathered images will be saved.
+        @param filename The `filename` parameter is a string that specifies the name of the output file
+        where the gathered images will be saved.
+        @param calib_filepath The `calib_filepath` parameter is the file path to the camera calibration
+        data. This data is used to normalize the captured images.
+        @param is_calib The `is_calib` parameter is a boolean flag that indicates whether the images
+        being gathered are for calibration purposes or not. If `is_calib` is `True`, the function will
+        perform camera calibration routine and save the images without any normalization. If `is_calib`
+        is `False`, the normal image processing using the normalization is applied
+        """
         
         # delete image if it exists
         if os.path.exists(output_dir + os.sep + filename):
@@ -177,7 +203,7 @@ class CameraFilterSynronizer:
 
 if __name__ == "__main__":
 
-    syncroniser = CameraFilterSynronizer(wavelengths=[ x + 550 for x in range(10)],
+    syncroniser = CameraFilterSyncronizer(wavelengths=[ x + 550 for x in range(10)],
                                         exposure= int(5e6))
     
     #example calibration of camera using mirror
