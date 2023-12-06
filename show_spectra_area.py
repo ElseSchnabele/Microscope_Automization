@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
-class ShowSpectra:
-    def __init__(self, root, x, y, file_path, wavelength_min, wavelength_max):
+class ShowSpectra_Area:
+    def __init__(self, root, topleft, bottomright, file_path, wavelength_min, wavelength_max):
         self.root = root
         self.root.title("Show spectrum")
 
-        self.x = x
-        self.y = y
+        self.top_left = topleft
+        self.bottom_right = bottomright
         self.filepath = file_path
 
         self.wavelength_max = wavelength_max
@@ -26,7 +26,7 @@ class ShowSpectra:
     def get_pixel_value(self, slide):
 
         image = tif.imread(self.filepath)
-        image_pixel_value = image[slide, self.x, self.y]
+        image_pixel_value = np.mean(self.crop_matrix_with_corners(image[slide, : , :]))
 
         return image_pixel_value
 
@@ -44,7 +44,7 @@ class ShowSpectra:
         x_values = list(range(self.wavelength_min, self.wavelength_max + 1))
         y_values = self.build_array_pixel()
 
-        self.ax.plot(x_values, y_values, label = ("Spectra of", self.x," and", self.y))
+        self.ax.plot(x_values, y_values, label = "Spectra")
 
         self.ax.minorticks_on()
         self.ax.grid()
@@ -54,6 +54,17 @@ class ShowSpectra:
 
         self.canvas.draw()
 
+    def crop_matrix_with_corners(self, matrix):
+        top_left_row, top_left_col = self.top_left
+        bottom_right_row, bottom_right_col = self.bottom_right
+
+        top_right = (top_left_row, bottom_right_col)
+        bottom_left = (bottom_right_row, top_left_col)
+
+        cropped_matrix = matrix[top_left_row:bottom_right_row + 1, top_left_col:bottom_right_col + 1]
+
+        return cropped_matrix
+
 if __name__ == "__main__":
     file_path = "/Users/jan-niklastopf/Downloads/EmbryoCE/focal551-755.tif"
     x_coord = 300
@@ -61,7 +72,7 @@ if __name__ == "__main__":
     min_wavelength = 400
     max_wavelength = 604 
     root = tk.Tk()
-    app = ShowSpectra(root, x_coord, y_coord, file_path, min_wavelength, max_wavelength)
+    app = ShowSpectra_Area(root, x_coord, y_coord, file_path, min_wavelength, max_wavelength)
     root.mainloop()
 
 

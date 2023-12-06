@@ -3,10 +3,13 @@ from tkinter import filedialog
 #import matplotlib.pyplot as plt
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.patches import Rectangle
 from PIL import Image
 from show_spectra import ShowSpectra
+from show_spectra_area import ShowSpectra_Area
 import re
 import os
+import datetime as dt
 
 class TifStackViewer_matplot:
     def __init__(self, root):
@@ -46,11 +49,19 @@ class TifStackViewer_matplot:
         self.toolbar.update()
         self.canvas.get_tk_widget().pack(expand = tk.YES, side = tk.BOTTOM, fill = tk.X)
 
-        #self.wavelength_min = wavelength_min
-        #self.wavelength_max = wavelength_max
-
         # Binding for click event on the canvas
         self.canvas.mpl_connect("button_press_event", self.on_canvas_click)
+        self.canvas.mpl_connect("button_release_event", self.on_canvas_release)
+
+        self.last_click_time = dt.datetime.now()
+
+        self.x1 = 0
+        self.x2 = 0
+
+        self.y1 = 0
+        self.y2 = 0
+
+        self.inner_plot = plt.subplot()
 
     def load_tif_stack(self):
         self.file_path = filedialog.askopenfilename(filetypes=[("TIF files", "*.tif")])
@@ -60,7 +71,7 @@ class TifStackViewer_matplot:
             self.show_image()
 
             filename = os.path.basename(self.file_path)
-            pattern = re.compile(r'focal(\d+)-(\d+)\.tif')
+            pattern = re.compile(r'wl_(\d+)-(\d+)\.tif')
             solution = pattern.search(filename)
 
             if solution:
@@ -88,16 +99,51 @@ class TifStackViewer_matplot:
 
     def on_canvas_click(self, event):
         # Function to be called when the left mouse button is clicked on the canvas
-        if event.button == 1:  # Check if the left mouse button was clicked
-            x, y = int(event.xdata), int(event.ydata)
-            print(f"Cursor Position on Click: x={x}, y={y}")
+        #if event.button == 1:  # Check if the left mouse button was clicked
+            current_time = dt.datetime.now()
+            time_diff = current_time - self.last_click_time
 
-            window_spectra = tk.Toplevel(self.root)
-            window_spectra.title("Spectra")
+            if time_diff.total_seconds() < 0.5:
+                x, y = int(event.xdata), int(event.ydata)
+                print(f"Cursor Position on Click: x={x}, y={y}")
 
-            ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
+                window_spectra = tk.Toplevel(self.root)
+                window_spectra.title("Spectra")
 
-        # function for the window for the spectra
+                ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
+
+            else:
+                self.x1, self.y1 = int(event.xdata), int(event.ydata)
+
+            self.last_click_time = current_time
+                
+    def on_canvas_release(self, event):
+        current_time = dt.datetime.now()
+        time_diff = current_time - self.last_click_time
+
+        if time_diff.total_seconds() > 0.5 and time_diff.total_seconds() <3.5:
+            x1 = self.x1
+            y1 = self.y1
+
+            x2 = int(event.xdata)
+            y2 = int(event.ydata)
+
+            topleft = (x1, y1)
+            bottomright = (x2, y2)
+
+            window_spectraArea = tk.Toplevel(self.root)
+            window_spectraArea.title("Spectra of Area")
+
+            ShowSpectra_Area(window_spectraArea, topleft, bottomright, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
+
+            width = x1 - x2
+            height = y1 - y2
+
+            rectangle = Rectangle(bottomright, width, height, edgecolor = "red", facecolor = 'none')
+
+            self.inner_plot.add_patch(rectangle)
+            self.inner_plot.plot()
+            self.canvas.draw()
 
 if __name__ == "__main__":
     root = tk.Tk()
