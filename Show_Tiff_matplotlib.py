@@ -13,6 +13,13 @@ import datetime as dt
 
 class TifStackViewer_matplot:
     def __init__(self, root):
+        """
+        This is the initialization function for a TIF Stack Matplotlib Viewer application in Python, which sets up the
+        GUI and defines various attributes and methods.
+        
+        @param root The "root" parameter is the main window or root window of the application. It is the
+        top-level window that contains all other widgets and elements of the user interface.
+        """
         # window
         self.root = root
         self.root.title("TIF Stack Viewer")
@@ -64,6 +71,12 @@ class TifStackViewer_matplot:
         self.inner_plot = plt.subplot()
 
     def load_tif_stack(self):
+        """
+        The function `load_tif_stack` prompts the user to select a TIF file, loads the images from the file
+        into an image stack, sets the slider range based on the number of images in the stack, displays the
+        first image, and extracts the wavelength interval from the file name if it matches a specific
+        pattern.
+        """
         self.file_path = filedialog.askopenfilename(filetypes=[("TIF files", "*.tif")])
         if self.file_path:
             self.image_stack = self.load_images_from_tif(self.file_path)
@@ -78,7 +91,17 @@ class TifStackViewer_matplot:
                 self.wavelength_intervall[0] = int(solution.group(1))
                 self.wavelength_intervall[1] = int(solution.group(2))
 
-    def load_images_from_tif(self, file_path):
+    def load_images_from_tif(self, file_path:str)-> list:
+        """
+        The function `load_images_from_tif` loads all frames from a TIFF file and returns them as a list of
+        images.
+        
+        @param file_path The file path is the location of the TIFF file that contains the images you want to
+        load. It should be a string that specifies the path to the file, including the file name and
+        extension. For example, "C:/images/my_images.tif" or "/home/user/images/my_images.tif".
+        
+        @return a list of images.
+        """
         image_stack = []
         with Image.open(file_path) as img:
             for i in range(img.n_frames):
@@ -87,37 +110,65 @@ class TifStackViewer_matplot:
         return image_stack
 
     def show_image(self):
+        """
+        The `show_image` function displays an image from a stack of images and updates the title of the
+        window accordingly.
+        """
         if self.image_stack:
             img = self.image_stack[self.current_index]
-            self.ax.imshow(img, cmap='gray')  # Hier kannst du die colormap anpassen
+            self.ax.imshow(img, cmap='gray')  
             self.root.title(f"TIF Stack Viewer - Image {self.current_index + 1}/{len(self.image_stack)}")
             self.canvas.draw()
             
-    def slider_control(self, value):
+    def slider_control(self, value:float):
+        """
+        The `slider_control` function updates the current index based on a given value and then calls the
+        `show_image` function.
+        
+        @param value The value parameter is a float that represents the current value of the slider.
+        """
         self.current_index = int(value)
         self.show_image()
 
     def on_canvas_click(self, event):
+        """
+        The `on_canvas_click` function is called when the left mouse button is clicked on the canvas, and it
+        performs different actions based on the time difference between consecutive clicks.
+        
+        @param event The `event` parameter is an object that represents the event that occurred. In this
+        case, it represents the left mouse button click event on the canvas. It contains information about
+        the event, such as the coordinates of the mouse cursor when the click occurred (`event.xdata` and
+        `event.ydata
+        """
+        
         # Function to be called when the left mouse button is clicked on the canvas
-        #if event.button == 1:  # Check if the left mouse button was clicked
-            current_time = dt.datetime.now()
-            time_diff = current_time - self.last_click_time
+        current_time = dt.datetime.now()
+        time_diff = current_time - self.last_click_time
 
-            if time_diff.total_seconds() < 0.5:
-                x, y = int(event.xdata), int(event.ydata)
-                print(f"Cursor Position on Click: x={x}, y={y}")
+        if time_diff.total_seconds() < 0.5:
+            x, y = int(event.xdata), int(event.ydata)
+            print(f"Cursor Position on Click: x={x}, y={y}")
 
-                window_spectra = tk.Toplevel(self.root)
-                window_spectra.title("Spectra")
+            window_spectra = tk.Toplevel(self.root)
+            window_spectra.title("Spectra")
 
-                ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
+            ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
 
-            else:
-                self.x1, self.y1 = int(event.xdata), int(event.ydata)
+        else:
+            self.x1, self.y1 = int(event.xdata), int(event.ydata)
 
-            self.last_click_time = current_time
-                
+        self.last_click_time = current_time
+            
     def on_canvas_release(self, event):
+        """
+        The `on_canvas_release` function is triggered when the user releases the mouse button on a canvas,
+        and it performs various actions including calculating the time difference between the current click
+        and the last click, creating a rectangle on the canvas, and updating the plot.
+        
+        @param event The `event` parameter is an object that represents the event that triggered the
+        `on_canvas_release` function. It contains information about the event, such as the coordinates of
+        the mouse click (`event.xdata` and `event.ydata`).
+        """
         current_time = dt.datetime.now()
         time_diff = current_time - self.last_click_time
 

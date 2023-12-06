@@ -19,6 +19,10 @@ import sys
 
 
 def configure_path():
+    """
+    The `configure_path` function sets the environment variable `PATH` to include the absolute path to
+    the DLLs directory and adds the DLL directory to the system's DLL search path if supported.
+    """
     is_64bits = sys.maxsize > 2**32
     relative_path_to_dlls = '..' + os.sep + 'dlls' + os.sep
 
