@@ -58,6 +58,7 @@ import subprocess
 from show_tiff_matplotlib import TifStackViewer_matplot
 from automization import CameraFilterSyncronizer
 import os
+from datetime import datetime
 
 
 # The CFsyncApp class is a Python class that represents a camera filter synchronizer application with
@@ -183,9 +184,11 @@ class CFsyncApp:
                 syncroniser = CameraFilterSyncronizer(wavelengths=[ int(min_wavelength) + i for i in range(int(max_wavelength)-int(min_wavelength)+1)],
                                             exposure= int(exposure_time)
                                             )
+                current_datetime = datetime.now()
+                date_format = "%Y-%m-%d_%H-%M-%S"
                 syncroniser.gatherImages(
                     output_dir = os.path.abspath(r'.'),
-                    filename = f"{filename}.tif",
+                    filename = f"{filename}_wl_650-670nm_{current_datetime.strftime(date_format)}.tif",
                     calib_filepath= os.path.join(calibfolder,calibfile),
                     is_calib= False
                     )
