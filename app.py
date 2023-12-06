@@ -15,7 +15,7 @@ class CFsyncApp:
 
         self.error_message_min_wavelength = tk.Label(root, text="", foreground="red")
         self.error_message_max_wavelength = tk.Label(root, text="", foreground="red")
-        self.error_message_bitdepth = tk.Label(root, text="", foreground="red")
+        
         self.error_message_exposure_time = tk.Label(root, text="", foreground="red")
 
         #Spinbox for Min. Wavelength (Integer)
@@ -32,14 +32,10 @@ class CFsyncApp:
         max_wavelength_spinbox.insert(0, 570)
         self.max_wavelength_spinbox = max_wavelength_spinbox
 
-        label3 = tk.Label(root, text="Bit depth:")
-        bitdepth_entry = tk.Entry(root)
-        bitdepth_entry.insert(0, 32768)
-        self.bitdepth_entry = bitdepth_entry
 
-        label4 = tk.Label(root, text="Exposure Time [µs]:")
+        label4 = tk.Label(root, text="Exposure Time [s]:")
         exposure_time_entry = tk.Entry(root)
-        exposure_time_entry.insert(0, 5000000)
+        exposure_time_entry.insert(0, 5)
         self.exposure_time_entry = exposure_time_entry
 
         label5 = tk.Label(root, text="Filename:")
@@ -77,9 +73,6 @@ class CFsyncApp:
         max_wavelength_spinbox.grid(row=1, column=1)
         self.error_message_max_wavelength.grid(row=1, column=2)
 
-        label3.grid(row=2, column=0)
-        bitdepth_entry.grid(row=2, column=1)
-        self.error_message_bitdepth.grid(row=2, column=2)
 
         label4.grid(row=3, column=0)
         exposure_time_entry.grid(row=3, column=1)
@@ -103,32 +96,32 @@ class CFsyncApp:
     def run_script(self):
         min_wavelength = self.min_wavelength_spinbox.get()
         max_wavelength = self.max_wavelength_spinbox.get()
-        bitdepth = self.bitdepth_entry.get()
-        exposure_time = self.exposure_time_entry.get()
+        
+        exposure_time = self.exposure_time_entry.get()*1e-6
         filename = self.filename_entry.get()
         calibfile = self.selected_file.get()
         calibfolder = self.selected_folder.get()
         is_min_valid = self.validate_entry(self.min_wavelength_spinbox, self.error_message_min_wavelength, self.validate_integer, "Please enter a valid integer for Min. Wavelength!")
         is_max_valid = self.validate_entry(self.max_wavelength_spinbox, self.error_message_max_wavelength, self.validate_integer, "Please enter a valid integer for Max. Wavelength")
-        is_bitdepth_valid = self.validate_entry(self.bitdepth_entry, self.error_message_bitdepth, self.validate_float, "Please enter a valid float for Bit Depth")
+        
         is_exposure_time_valid = self.validate_entry(self.exposure_time_entry, self.error_message_exposure_time, self.validate_float, "Please enter a valid float for Exposure time")
 
-        if is_min_valid and is_max_valid and is_bitdepth_valid and is_exposure_time_valid:
+        if is_min_valid and is_max_valid  and is_exposure_time_valid:
             is_min_smaller_max = self.min_smaller_max((self.min_wavelength_spinbox, self.max_wavelength_spinbox), self.error_message_max_wavelength,  "Max. Wavelength must be bigger than Min. Wavelength!")
             if is_min_smaller_max:
-                output = f"Min. Wavelength [nm]: {min_wavelength}\nMax. Wavelength [nm]: {max_wavelength}\nBit depth: {bitdepth}\nExposure Time [µs]: {exposure_time}"
+                output = f"Min. Wavelength [nm]: {min_wavelength}\nMax. Wavelength [nm]: {max_wavelength}\nExposure Time [µs]: {exposure_time}"
                 self.output_text.config(state=tk.NORMAL)
                 self.output_text.delete(1.0, tk.END)
                 self.output_text.insert(tk.END, output)
                 self.output_text.config(state=tk.DISABLED)
                 syncroniser = CameraFilterSynronizer(wavelengths=[ int(min_wavelength) + i for i in range(int(max_wavelength)-int(min_wavelength)+1)],
-                                            tag_bitdepth = int(bitdepth),
-                                            tag_exposure= int(exposure_time)
+                                            exposure= int(exposure_time)
                                             )
                 syncroniser.gatherImages(
                     output_dir = os.path.abspath(r'.'),
                     filename = f"{filename}.tif",
-                    calib_filepath= os.join(calibfolder,calibfile)
+                    calib_filepath= os.join(calibfolder,calibfile),
+                    is_calib= False
                     )
                 syncroniser.cleanup()
     #display error messages

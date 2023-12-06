@@ -1,32 +1,25 @@
 import pandas as pd
 import numpy as np
+import tifffile as tif
 
 
 class ImageNormalizer:
-    def __init__(self, input_dict, calibration_file_path):
-        self._input_dict = input_dict
-        self._calibration_file_path = calibration_file_path
-        
-    def normalize(self)-> dict:
+    def __init__(self, calibration_file_path):
         try:
-            calib = pd.read_csv(self._calibration_file_path, sep= ",", )
+            calib = tif.imread(calibration_file_path)
+            #assume calib file always contains whole spectrum covered by Kurios
+            calib = dict([(x+430, calib[x]) for x in range(301)])
+            self._calib = calib
         except Exception:
-            print('Calibration File not found/ Folder CalibrationFiles cannot be created!')
-        #overwrite a copy of input dict
-        output_dict = self._input_dict
-        max_output = 0
-        for j, wl in range(self._input_dict['wavelengths']):
-            max_intensity_calib = calib['power_meas'][ np.where(calib['wavelengths'] is wl)]
-            #devide trough maximum measured intensity
-            output_dict['images'][j] = (output_dict['images'][j]/max_intensity_calib)
-            if max(output_dict['images'][j]) > max_output:
-                max_output = max(output_dict['images'][j])
-                
-        #normalize with max 
-        #TODO normalize with CameraCalibrator
-        for j, image in enumerate(output_dict['images']):
-            output_dict['images '][j] = image/max_output*256
-        
-        return output_dict
+            print('Calibration File not found does not match expected wavelengths (430nm-730nm)!')
+    
+    def normalize_image(self, wavelength, input_image):
+        calib_image = self._calib[wavelength]
+        try:
+            return input_image/calib_image
+        except Exception as e:
+            print(f'cannot normalize image, maybe wrong format: {e}')
+            
+    
 
     

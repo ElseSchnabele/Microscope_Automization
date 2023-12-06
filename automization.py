@@ -23,7 +23,7 @@ from thorlabs_tsi_sdk.tl_camera_enums import SENSOR_TYPE
 
 class CameraFilterSynronizer:
     
-    def __init__(self, wavelengths: list, tag_bitdepth: int, tag_exposure: int) -> None:
+    def __init__(self, wavelengths: list, exposure: int) -> None:
         self._wavelengths = wavelengths
         
         #try to access Kurios
@@ -46,9 +46,8 @@ class CameraFilterSynronizer:
                 camera.frames_per_trigger_zero_for_unlimited = 0
                 camera.image_poll_timeout_ms = 2000  # 2 second timeout
 
-                # save these values to set for camera later
-                self._bit_depth = tag_bitdepth
-                self._exposure = tag_exposure
+                # save exposure time
+                self._exposure = exposure
 
                 # need to save the image width and height for color processing
                 self._image_width= camera.image_width_pixels
@@ -73,7 +72,7 @@ class CameraFilterSynronizer:
 
                 
         
-    def gatherImages(self, output_dir: str, filename: str, calib_filepath:str):
+    def gatherImages(self, output_dir: str, filename: str, calib_filepath:str, is_calib: bool):
         
         # delete image if it exists
         if os.path.exists(output_dir + os.sep + filename):
@@ -92,33 +91,53 @@ class CameraFilterSynronizer:
                 camera.arm(2)
                 camera.issue_software_trigger()
                 time.sleep(1)
+                #set exposure time
                 camera.exposure_time_us = self._exposure
                 
-                #set range of wavelength and iterate
+                if not is_calib:
+                    image_normalizer = ImageNormalizer(calib_filepath)
+                    for wl in self._wavelengths:
+                        time.sleep(self._exposure*(10e-7)+0.3)
+                        KuriosSetWavelength(self._hdl, wl)
+                        frame = camera.get_pending_frame_or_null()
+                        if frame is None:
+                            raise TimeoutError("Timeout was reached while polling for a frame, program will now exit")
+                        image_data = frame.image_buffer
+                        if self._is_color_camera:
+                            # transform the raw image data into RGB color data
+                            image_data= self._mono_to_color_processor.transform_to_48(image_data, self._image_width, self._image_height).reshape(self._image_height, self._image_width, 3)
 
-                for wl in self._wavelengths:
-                    time.sleep(self._exposure*(10e-7)+0.3)
-                    KuriosSetWavelength(self._hdl, wl)
-                    frame = camera.get_pending_frame_or_null()
-                    if frame is None:
-                        raise TimeoutError("Timeout was reached while polling for a frame, program will now exit")
-                    image_data = frame.image_buffer
-                    if self._is_color_camera:
-                        # transform the raw image data into RGB color data
-                        image_data= self._mono_to_color_processor.transform_to_48(image_data, self._image_width, self._image_height).reshape(self._image_height, self._image_width, 3)
-                    data_dict = {
-                        'images': image_data,
-                        'wavelengths': self._wavelengths
-                    }
-                    img_normalizer = ImageNormalizer(data_dict= data_dict, calibration_file_path= calib_filepath)
-                    scaled_image_data = ((image_data - image_data.min()) / (image_data.max() - image_data.min()) * 256).astype(np.uint8)
-                    
-                    with tifffile.TiffWriter(output_dir + os.sep + filename, append=True) as tiff:
-                        tiff.save(data=scaled_image_data,  # np.ushort image data array from the camera
-                                #compression = 'deflate'# amount of compression (0-9), by default it is uncompressed (0)
-                                )
-                    
-  
+                        #gathering images
+                        try:
+                            normalized_image = image_normalizer.normalize_image(wavelength= wl, input_image= image_data)
+                            with tifffile.TiffWriter(output_dir + os.sep + filename, append=True) as tiff:
+                                tiff.save(data= normalized_image,  # np.ushort image data array from the camera
+                                        #compression = 'deflate'# amount of compression (0-9), by default it is uncompressed (0)
+                                        )
+                        except Exception as exception:
+                            print(f'Maybe no calibration exists for given exposure time: {exception}')
+                else:
+                    #camera calibration routine
+                    for wl in np.arange(430, 730 + 1):
+                        time.sleep(self._exposure*(10e-7)+0.3)
+                        KuriosSetWavelength(self._hdl, wl)
+                        frame = camera.get_pending_frame_or_null()
+                        if frame is None:
+                            raise TimeoutError("Timeout was reached while polling for a frame, program will now exit")
+                        image_data = frame.image_buffer
+                        if self._is_color_camera:
+                            # transform the raw image data into RGB color data
+                            image_data= self._mono_to_color_processor.transform_to_48(image_data, self._image_width, self._image_height).reshape(self._image_height, self._image_width, 3)
+
+                        with tifffile.TiffWriter(output_dir + os.sep + filename, append=True) as tiff:
+                                tiff.save(data= image_data,  # np.ushort image data array from the camera
+                                        #compression = 'deflate'# amount of compression (0-9), by default it is uncompressed (0)
+                                        )
+                        
+                        
+                        
+
+              
                     
     def cleanup(self):
         """
@@ -152,12 +171,14 @@ class CameraFilterSynronizer:
 if __name__ == "__main__":
 
     syncroniser = CameraFilterSynronizer(wavelengths=[ x + 550 for x in range(10)],
-                                        tag_bitdepth = 32768,
-                                        tag_exposure= int(5e6)
-                                        )
+                                        exposure= int(5e6))
+    
+    #example calibration of camera using mirror
     syncroniser.gatherImages(
-        output_dir = os.path.abspath(r'.'),
-        filename = 'test_series1.tif',
+        output_dir = os.join(os.path.abspath(r'.'), 'Camera_Calibration_Files'),
+        filename = 'calib_expo_5s.tif',
+        calib_filepath= None,
+        is_calib= True
         )
     syncroniser.cleanup()
 
