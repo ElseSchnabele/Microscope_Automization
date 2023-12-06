@@ -17,6 +17,13 @@ from thorlabs_tsi_sdk.tl_camera import TLCameraSDK
 from thorlabs_tsi_sdk.tl_mono_to_color_processor import MonoToColorProcessorSDK
 from thorlabs_tsi_sdk.tl_camera_enums import SENSOR_TYPE
 
+try:
+    # if on Windows, use the provided setup script to add the DLLs folder to the PATH
+    from windows_setup import configure_path
+    configure_path()
+except ImportError:
+    configure_path = None
+
 
 
 
@@ -35,7 +42,7 @@ class CameraFilterSynronizer:
         Kurios = devs[0] #get serial number
         hdl = KuriosOpen(Kurios[0],115200,3)
         self._hdl = hdl
-                        #try to access camera
+        #try to access camera
         with TLCameraSDK() as sdk:
             cameras = sdk.discover_available_cameras()
             if len(cameras) == 0:
@@ -175,7 +182,7 @@ if __name__ == "__main__":
     
     #example calibration of camera using mirror
     syncroniser.gatherImages(
-        output_dir = os.join(os.path.abspath(r'.'), 'Camera_Calibration_Files'),
+        output_dir = os.path.join(os.path.abspath(r'.'), 'Camera_Calibration_Files'),
         filename = 'calib_expo_5s.tif',
         calib_filepath= None,
         is_calib= True

@@ -7,6 +7,7 @@ from show_tiff_matplotlib import TifStackViewer_matplot
 from automization import CameraFilterSynronizer
 import os
 
+
 class CFsyncApp:
 
     def __init__(self, root):
@@ -97,7 +98,7 @@ class CFsyncApp:
         min_wavelength = self.min_wavelength_spinbox.get()
         max_wavelength = self.max_wavelength_spinbox.get()
         
-        exposure_time = self.exposure_time_entry.get()*1e-6
+        exposure_time = float(self.exposure_time_entry.get())*1e6#to microseconds
         filename = self.filename_entry.get()
         calibfile = self.selected_file.get()
         calibfolder = self.selected_folder.get()
@@ -109,7 +110,7 @@ class CFsyncApp:
         if is_min_valid and is_max_valid  and is_exposure_time_valid:
             is_min_smaller_max = self.min_smaller_max((self.min_wavelength_spinbox, self.max_wavelength_spinbox), self.error_message_max_wavelength,  "Max. Wavelength must be bigger than Min. Wavelength!")
             if is_min_smaller_max:
-                output = f"Min. Wavelength [nm]: {min_wavelength}\nMax. Wavelength [nm]: {max_wavelength}\nExposure Time [µs]: {exposure_time}"
+                output = f"Min. Wavelength [nm]: {min_wavelength}\n Max. Wavelength [nm]: {max_wavelength}\n Exposure Time [µs]: {exposure_time}"
                 self.output_text.config(state=tk.NORMAL)
                 self.output_text.delete(1.0, tk.END)
                 self.output_text.insert(tk.END, output)
@@ -120,12 +121,12 @@ class CFsyncApp:
                 syncroniser.gatherImages(
                     output_dir = os.path.abspath(r'.'),
                     filename = f"{filename}.tif",
-                    calib_filepath= os.join(calibfolder,calibfile),
+                    calib_filepath= os.path.join(calibfolder,calibfile),
                     is_calib= False
                     )
                 syncroniser.cleanup()
     #display error messages
-    def display_error_message(label, message):
+    def display_error_message(self, label, message):
         label.config(text=message)
 
     #validation output: Error messages
@@ -139,7 +140,7 @@ class CFsyncApp:
             return False
 
     #Validate integer inputs
-    def validate_integer(P):
+    def validate_integer(self, P):
         if P == "":
             return True  
         try:
@@ -149,7 +150,7 @@ class CFsyncApp:
             return False
 
     #Validate Float Inputs
-    def validate_float(P):
+    def validate_float(self, P):
         if P == "":
             return True  
         try:

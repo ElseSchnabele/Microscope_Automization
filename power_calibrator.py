@@ -16,7 +16,7 @@ import pyvisa
 from ThorlabsPM100 import ThorlabsPM100
 
 
-class PowerCalibrator():
+class PowerCalibrator:
     def __init__(self) -> None:
         #try to access Kurios
         devs = KuriosListDevices()
