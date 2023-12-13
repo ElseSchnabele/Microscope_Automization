@@ -4,6 +4,7 @@ A Microscope Automatization Project by Jan-Niklas Topf and Frederick Krafft
 For Pull Requests or questions please contact:
 
 Frederick Krafft: frederick.krafft@gmail.com
+
 Jan-Niklas Topf: jntopf@gmail.com
 
 Visit HTML Page for detailed project structure documentation: [Documentation](./html/index.html)
