@@ -1,7 +1,7 @@
 # Microscope_Automization
 A Microscope Automatization Project by Jan-Niklas Topf and Frederick Krafft 
 
-Documentation: [Documentation](./html/index.html)
+Visit HTML Page for detailed project structure documentation: [Documentation](./html/index.html)
 ## Class Diagram 
 The project structure is visualized in the following class diagram:
 ```mermaid
