@@ -130,7 +130,7 @@ TifStackViewer_matplot o-- ShowSpectra_Area: markevent
 ## GUI Usage 
 
 The main graphical user interface offers the initialization of a new measurement series using the Synchronizer and displaying existing data in a Viewer subroutine. The user flow is visualized in the following:
-``` mermaid
+```mermaid
 flowchart TD
     B("Main Window
        - set Wavelength min and max
