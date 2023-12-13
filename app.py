@@ -1,4 +1,4 @@
-"""! @brief Example Python program with Doxygen style comments."""
+"""! @brief Syncronization of THORLAB Kiralux and Kurios-WB1"""
 ##
 # @mainpage Camera-Filter Syncronization
 #

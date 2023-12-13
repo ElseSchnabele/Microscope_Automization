@@ -52,8 +52,11 @@ class ShowSpectra_Area:
         @return the average pixel value of a specific slide in an image.
         """
 
-        image = tif.imread(self.filepath)
-        image_pixel_value = np.mean(self.crop_matrix_with_corners(image[slide, : , :]))
+        with tif.TiffFile(self.filepath) as file:
+            file = [page.asarray() for page in file.pages]
+        
+
+        image_pixel_value = np.mean(self.crop_matrix_with_corners(file[slide]))
 
         return image_pixel_value
 

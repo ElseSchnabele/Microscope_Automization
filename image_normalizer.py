@@ -14,9 +14,12 @@ class ImageNormalizer:
         covered by Kurios, which ranges from 430nm to 730nm.
         """
         try:
-            calib = tif.imread(calibration_file_path)
+            with tif.TiffFile(calibration_file_path) as file:
+                # Lesen aller Seiten (Bilder) des TIFFs
+                calib_raw = [page.asarray() for page in file.pages]
+            #calib_raw = tif.imread(calibration_file_path)
             #assume calib file always contains whole spectrum covered by Kurios
-            calib = dict([(x+430, calib[x]) for x in range(301)])
+            calib = dict([(x+430, calib_raw[x]) for x in range(301)])
             self._calib = calib
         except Exception:
             print('Calibration File not found does not match expected wavelengths (430nm-730nm)!')
@@ -35,7 +38,12 @@ class ImageNormalizer:
         """
         calib_image = self._calib[wavelength]
         try:
-            return input_image/calib_image
+            output_image = (input_image/calib_image*2**8).astype(np.uint16)
+            
+            if output_image.max() > 2**16:
+                raise OverflowError('Image Input per pixel channel is larger than 16 bit! Check normalization Files!')
+            else:
+                return output_image
         except Exception as e:
             print(f'cannot normalize image, maybe wrong format: {e}')
             

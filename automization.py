@@ -144,7 +144,8 @@ class CameraFilterSyncronizer:
                         try:
                             normalized_image = image_normalizer.normalize_image(wavelength= wl, input_image= image_data)
                             with tifffile.TiffWriter(output_dir + os.sep + filename, append=True) as tiff:
-                                tiff.save(data= normalized_image,  # np.ushort image data array from the camera
+                                tiff.save(data= normalized_image, 
+                                        # np.ushort image data array from the camera
                                         #compression = 'deflate'# amount of compression (0-9), by default it is uncompressed (0)
                                         )
                         except Exception as exception:
@@ -209,7 +210,7 @@ if __name__ == "__main__":
     #example calibration of camera using mirror
     syncroniser.gatherImages(
         output_dir = os.path.join(os.path.abspath(r'.'), 'Camera_Calibration_Files'),
-        filename = 'calib_expo_5s.tif',
+        filename = 'calib_4x_expo_5s.tif',
         calib_filepath= None,
         is_calib= True
         )

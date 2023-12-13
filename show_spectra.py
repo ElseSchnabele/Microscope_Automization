@@ -47,9 +47,9 @@ class ShowSpectra:
         
         @return the pixel value of the specified slide at the given coordinates (x, y).
         """
-
-        image = tif.imread(self.filepath)
-        image_pixel_value = image[slide, self.x, self.y]
+        with tif.TiffFile(self.filepath) as file:
+            file = [page.asarray() for page in file.pages]
+        image_pixel_value = file[slide][ self.x, self.y]
 
         return image_pixel_value
 
