@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['root_0',['root',['../classapp_1_1_c_fsync_app.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'app.CFsyncApp.root'],['../classshow__spectra_1_1_show_spectra.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'show_spectra.ShowSpectra.root'],['../classshow__spectra__area_1_1_show_spectra___area.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'show_spectra_area.ShowSpectra_Area.root'],['../classshow__tiff__matplotlib_1_1_tif_stack_viewer__matplot.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'show_tiff_matplotlib.TifStackViewer_matplot.root'],['../namespaceapp.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'app.root'],['../namespaceshow__spectra.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'show_spectra.root'],['../namespaceshow__spectra__area.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'show_spectra_area.root'],['../namespaceshow__tiff__matplotlib.html#ab4b8daf4b8ea9d39568719e1e320076f',1,'show_tiff_matplotlib.root']]]
+];

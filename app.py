@@ -8,12 +8,12 @@
 #
 #
 # @section notes_main Notes
-# Contains:
-#-GUI to obtain and view images for an interval of wavelengths
-#-Power Calibrator which obtains the power measurements of a  
-#THORLABS S170C - Microscope Slide Power Sensor and loads the intensity data into an calibration file
-#-Test and example files provided by THORLABS and by Pierre CladÃ© for the powermeter
-#-Calibration files for the Camera and the powermeter for a selection of objectives, exposure times and wavelengths
+# Contains: \n
+#-GUI to obtain and view images for an interval of wavelengths\n
+#-Power Calibrator which obtains the power measurements of a  \n
+#THORLABS S170C - Microscope Slide Power Sensor and loads the intensity data into an calibration file\n
+#-Test and example files provided by THORLABS and Pierre Cladé: mailto:pierre.clade@spectro.jussieu.fr for the PM1000\n
+#-Calibration files for the Camera and the powermeter for a selection of objectives, exposure times and wavelengths \n
 #
 #Download on GitHub: https://github.com/ElseSchnabele/Microscope_Automization
 #
