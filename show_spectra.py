@@ -35,6 +35,12 @@ class ShowSpectra:
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.root)
         self.canvas.get_tk_widget().pack(expand=tk.YES, fill=tk.BOTH)
 
+        #interactive part
+        self.canvas.get_tk_widget().pack(expand = tk.YES, side = tk.BOTTOM, fill = tk.X)
+        self.toolbar = NavigationToolbar2Tk(self.canvas)
+        self.toolbar.update()
+        self.canvas.get_tk_widget().pack(expand = tk.YES, side = tk.BOTTOM, fill = tk.X)
+
         self.show_image()
 
     def get_pixel_value(self, slide:int)-> int:
@@ -79,15 +85,17 @@ class ShowSpectra:
         sand draws the graph on a canvas.
         """
         x_values = list(range(self.wavelength_min, self.wavelength_max + 1))
-        y_values = self.build_array_pixel()
+        y_values = np.array(self.build_array_pixel())/2**8
 
-        self.ax.plot(x_values, y_values, label = ("Spectra of", self.x," and", self.y))
+        
+
+        self.ax.plot(x_values, y_values, label = ("Spectra of x = ", self.x," and y = ", self.y))
 
         self.ax.minorticks_on()
         self.ax.grid()
         self.ax.legend()
-        self.ax.set_xlabel("Wavelength")
-        self.ax.set_ylabel("Intsity")
+        self.ax.set_xlabel("Wavelength in nm")
+        self.ax.set_ylabel("Relative value of max intensity")
 
         self.canvas.draw()
 
