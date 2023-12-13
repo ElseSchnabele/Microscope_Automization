@@ -131,18 +131,18 @@ TifStackViewer_matplot o-- ShowSpectra_Area: markevent
 
 The main graphical user interface offers the initialization of a new measurement series using the Synchronizer and displaying existing data in a Viewer subroutine. The user flow is visualized in the following:
 ```mermaid
-flowchart TD
+flowchart TD;
     B("Main Window
        - set Wavelength min and max
        - set exposure time
        - set filename
        - select calibration file
-                        ")
+                        ");
     B -->|collect image|C(Collects images for the set wavelengths in a tif file.
-                          The values for the wavelength intervall are stored in the filename.)
-    B -->|Show images|D(Opens the window where the gathered images can be displayed)
+                          The values for the wavelength intervall are stored in the filename.);
+    B -->|Show images|D(Opens the window where the gathered images can be displayed);
     D -->|Load Tif|E(Opens the plot to show the image. The slider can be used to change the 
-                     visible page of the tif file)
-    E -->|one click|F(shows the spectrum for the clicked location)
-    E -->|drag mouse|G(shows the mean specrum for the highlighted area)
+                     visible page of the tif file);
+    E -->|one click|F(shows the spectrum for the clicked location);
+    E -->|drag mouse|G(shows the mean specrum for the highlighted area);
 ```
