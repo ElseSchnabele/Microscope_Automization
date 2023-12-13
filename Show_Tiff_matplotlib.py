@@ -84,10 +84,10 @@ class TifStackViewer_matplot:
             self.show_image()
 
             filename = os.path.basename(self.file_path)
-            pattern = re.compile(r'wl_(\d+)-(\d+)\.tif')
+            pattern = re.compile(r'wl_(\d+)-(\d+)nm')
             solution = pattern.search(filename)
 
-            if solution:
+            if solution:  
                 self.wavelength_intervall[0] = int(solution.group(1))
                 self.wavelength_intervall[1] = int(solution.group(2))
 

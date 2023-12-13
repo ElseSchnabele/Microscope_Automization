@@ -68,8 +68,10 @@ class ShowSpectra_Area:
         
         @return the final_array, which is a list containing the pixel values for each slide in the image.
         """
-        image = tif.imread(self.filepath)
-        slide_number = image.shape[0]
+        with tif.TiffFile(self.filepath) as file:
+            file = [page.asarray() for page in file.pages]
+
+        slide_number = len(file)
         final_array = []
 
         for i in range(slide_number):

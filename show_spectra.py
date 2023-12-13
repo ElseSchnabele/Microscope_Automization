@@ -61,8 +61,11 @@ class ShowSpectra:
         
         @return a final array, which is a list of pixel values extracted from an image.
         """
-        image = tif.imread(self.filepath)
-        slide_number = image.shape[0]
+
+        with tif.TiffFile(self.filepath) as file:
+            file = [page.asarray() for page in file.pages]
+        
+        slide_number = len(file)
         final_array = []
 
         for i in range(slide_number):
