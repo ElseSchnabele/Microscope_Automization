@@ -188,7 +188,7 @@ class CFsyncApp:
                 date_format = "%Y-%m-%d_%H-%M-%S"
                 syncroniser.gatherImages(
                     output_dir = os.path.abspath(r'.'),
-                    filename = f"{filename}_wl_650-670nm_{current_datetime.strftime(date_format)}.tif",
+                    filename = f"{filename}_wl_{min_wavelength}-{max_wavelength}nm_{current_datetime.strftime(date_format)}.tif",
                     calib_filepath= os.path.join(calibfolder,calibfile),
                     is_calib= False
                     )

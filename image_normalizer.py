@@ -34,7 +34,7 @@ class ImageNormalizer:
         want to divide by the calibration image.
         
         @return the normalized image, which is obtained by dividing the input image by the calibration image
-        for the given wavelength.
+        for the given wavelength and then multiplying it by the maximum 8bit value. To allow relative intensity greater than 100%, each pixel is saved as 16bit integer.
         """
         calib_image = self._calib[wavelength]
         try:
