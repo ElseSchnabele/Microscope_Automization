@@ -140,3 +140,14 @@ flowchart TD
     E -->|drag mouse| G("Shows the mean spectrum for the highlighted area")
 
 ```
+## Image Processing
+The synchronizer useses reference intensity data to normalize the images, which was captured using a reference white scattering sample as the target. Thus the data is displayed in a relative scale to the corresponding incident flux density. After the normalization one could implement a power calibrator, which would put the captured intensity on the camera in relation to the total incident power. The flow can be visualized as following (Power calibrator not implemented!):
+```mermaid
+flowchart LR
+    A[Raw Image]
+    A -->|Normalize| B[Normalized Image]
+    B -->|Get Power Values| C[Power Values]
+    style C stroke-dasharray: 5, 5
+    C -->|Output| D[Output Image]
+
+```
