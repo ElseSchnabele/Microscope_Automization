@@ -127,6 +127,7 @@ TifStackViewer_matplot o-- ShowSpectra_Area: markevent
         +on_canvas_release(event: Event): void
     }
 ```
+Note that the Power Calibrator is not implemented yet and would be necessary to establish a relation between the intensity captured by the camera and the total incident/reflected power distribution.
 ## GUI Usage 
 
 The main graphical user interface offers the initialization of a new measurement series using the Synchronizer and displaying existing data in a Viewer subroutine. The user flow is visualized in the following:
