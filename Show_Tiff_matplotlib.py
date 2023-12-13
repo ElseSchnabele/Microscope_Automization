@@ -143,19 +143,8 @@ class TifStackViewer_matplot:
         
         # Function to be called when the left mouse button is clicked on the canvas
         current_time = dt.datetime.now()
-        time_diff = current_time - self.last_click_time
 
-        if time_diff.total_seconds() < 0.5:
-            x, y = int(event.xdata), int(event.ydata)
-            print(f"Cursor Position on Click: x={x}, y={y}")
-
-            window_spectra = tk.Toplevel(self.root)
-            window_spectra.title("Spectra")
-
-            ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
-
-        else:
-            self.x1, self.y1 = int(event.xdata), int(event.ydata)
+        self.x1, self.y1 = int(event.xdata), int(event.ydata)
 
         self.last_click_time = current_time
             
@@ -171,6 +160,16 @@ class TifStackViewer_matplot:
         """
         current_time = dt.datetime.now()
         time_diff = current_time - self.last_click_time
+
+        if time_diff.total_seconds() < 0.5:
+            x, y = int(event.xdata), int(event.ydata)
+            print(f"Cursor Position on Click: x={x}, y={y}")
+
+            window_spectra = tk.Toplevel(self.root)
+            window_spectra.title("Spectra")
+
+            ShowSpectra(window_spectra, x, y, self.file_path, self.wavelength_intervall[0], self.wavelength_intervall[1])
+
 
         if time_diff.total_seconds() > 0.5 and time_diff.total_seconds() <3.5:
             x1 = self.x1

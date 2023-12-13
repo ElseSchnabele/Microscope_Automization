@@ -49,7 +49,7 @@ class ShowSpectra:
         """
         with tif.TiffFile(self.filepath) as file:
             file = [page.asarray() for page in file.pages]
-        image_pixel_value = file[slide][ self.x, self.y]
+        image_pixel_value = file[slide][self.x, self.y]
 
         return image_pixel_value
 
