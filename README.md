@@ -1,8 +1,13 @@
 # Microscope_Automization
 A Microscope Automatization Project by Jan-Niklas Topf and Frederick Krafft 
 
+For Pull Requests or questions please contact:
+
+Frederick Krafft: frederick.krafft@gmail.com
+Jan-Niklas Topf: jntopf@gmail.com
+
 Visit HTML Page for detailed project structure documentation: [Documentation](./html/index.html)
-## Class Diagram 
+## Project Structure 
 The project structure is visualized in the following class diagram:
 ```mermaid
 classDiagram
@@ -130,6 +135,8 @@ TifStackViewer_matplot o-- ShowSpectra_Area: markevent
     }
 ```
 Note that the Power Calibrator is not implemented yet and would be necessary to establish a relation between the intensity captured by the camera and the total incident/reflected power distribution.
+
+Also, the Camera Calibration Files are not provided in the Repository, hence the files are too big to upload on Github. Download the file from [here](https://drive.google.com/drive/folders/1pPr-12MtbcalUFZClFj-w6SLMCRka5Ex?usp=drive_link), or contact us via email. Save the folder under the same name in your local repository.
 ## GUI Usage 
 
 The main graphical user interface offers the initialization of a new measurement series using the Synchronizer and displaying existing data in a Viewer subroutine. The user flow is visualized in the following:
